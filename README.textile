@@ -105,6 +105,23 @@ using @default_limit@:
   Article.limited  # Get the first 15 articles
   </code></pre>
   
+h3. Date
+
+@after@ lets you dynamically select every record for a column after a choosen date.
+
+  Article.after(:created_at, Date.parse('2008-10-10'))
+  Article.created_after(Date.parse('2008-10-10')) # equivalent to previous line
+
+@before@ lets you dynamically select every records for a column after a choosen date.
+
+  Article.before(:created_at, Date.parse('2008-10-10'))
+  Article.created_before(Date.parse('2008-10-10')) # equivalent to previous line
+
+@at@ and @on@ lets you select every records for a column after a choosen date.
+
+  Article.on(:created_at, Date.parse('2008-10-10'))
+  Article.created_at(Date.parse('2008-10-10')) # equivalent to previous line
+
 h3. Ordered
 
 _Note: the @ordered@ scope cannot be chained with any other @order@ clauses_
