@@ -19,8 +19,6 @@ module UtilityScopes
           { :conditions => {args.flatten[0] => args.flatten[1]} }
         })
               
-        # If you don't include a 3rd param field then it will default to created_at
-        # model.between(start_at, end_at) or model.between(start_at, end_at, 'deleted_at')
         named_scope :between, lambda { |*args| { :conditions => ["? BETWEEN ? AND ?", args.flatten[0].to_s, args.flatten[1], args.flatten[2]] } }
         
         class << self
