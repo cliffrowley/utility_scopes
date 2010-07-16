@@ -23,6 +23,12 @@ describe "Date scope" do
     end
   end
   
+  describe "'between' named_scope" do
+    it "should have right proxy options" do
+      Article.between(:created_at, Date.parse("2008-10-10"), Date.parse("2009-10-10")).proxy_options.should == {:conditions=> ["? BETWEEN ? AND ?", 'created_at', Date.parse("2008-10-10"), Date.parse("2009-10-10")] }
+    end
+  end
+  
   describe "method_missing" do
     it "should call 'after' named_scope and return the right proxy options" do
       require 'ostruct'
@@ -49,6 +55,15 @@ describe "Date scope" do
       columns = [el]
       Article.stub!(:columns).and_return(columns)
       Article.created_at(Date.parse("2008-10-10")).proxy_options.should == {:conditions=> {"created_at" => Date.parse("2008-10-10")}}
+    end
+    
+    it "should call 'between' named_scope and return the right proxy options" do
+      require 'ostruct'
+      el = OpenStruct.new({:name => 'created_at'})
+      el.stub!(:type).and_return(:datetime)
+      columns = [el]
+      Article.stub!(:columns).and_return(columns)
+      Article.created_between(Date.parse("2008-10-10"), Date.parse("2009-10-10")).proxy_options.should == {:conditions=> ["? BETWEEN ? AND ?", 'created_at', Date.parse("2008-10-10"), Date.parse("2009-10-10")] }
     end
   end
 end

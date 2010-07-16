@@ -18,6 +18,10 @@ module UtilityScopes
         named_scope(:on, lambda { |*args|
           { :conditions => {args.flatten[0] => args.flatten[1]} }
         })
+              
+        # If you don't include a 3rd param field then it will default to created_at
+        # model.between(start_at, end_at) or model.between(start_at, end_at, 'deleted_at')
+        named_scope :between, lambda { |*args| { :conditions => ["? BETWEEN ? AND ?", args.flatten[0].to_s, args.flatten[1], args.flatten[2]] } }
         
         class << self
           # Set alias on
@@ -57,6 +61,12 @@ module UtilityScopes
         when col = method.to_s.match(/^(.*)(_on|_at)$/)[1] rescue false
           if col = self.columns.find{|c| c.type == :datetime && c.name.match(/^#{col}(_at|_on)$/) }.name rescue false
             return self.on(col, args.flatten.first)
+          else
+            super
+          end
+        when col = method.to_s.match(/^(.*)(_between)$/)[1] rescue false
+          if col = self.columns.find{|c| c.type == :datetime && c.name.match(/^#{col}(_at|_on)$/) }.name rescue false
+            return self.between(col, args.flatten[0], args.flatten[1])
           else
             super
           end
