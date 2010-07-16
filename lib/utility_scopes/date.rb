@@ -19,7 +19,7 @@ module UtilityScopes
           { :conditions => {args.flatten[0] => args.flatten[1]} }
         })
               
-        named_scope :between, lambda { |*args| { :conditions => ["? BETWEEN ? AND ?", args.flatten[0].to_s, args.flatten[1], args.flatten[2]] } }
+        named_scope :between, lambda { |*args| { :conditions => ["#{args.flatten[0].to_s} BETWEEN ? AND ?", args.flatten[1], args.flatten[2]] } }
         
         class << self
           # Set alias on
@@ -30,17 +30,14 @@ module UtilityScopes
     
     module ClassMethods
       
-      # Decorate this class with the ability to order itself in queries
-      # either from a given parameter or from its default ordering:
-      #
-      #   class Article < ActiveRecord::Base
-      #     ordered_by "published_at DESC"
-      #   end
-      #
-      #   Article.ordered #=> all items ordered by "published_at DESC"
-      #   Article.ordered('popularity ASC') #=> all items ordered by "popularity ASC"
-      #   Article.default_ordering #=> "published_at DESC"
-      #
+      # Allow things like these:
+      #   @post.created_before(1.day.ago)
+      #   @post.created_between(1.month.ago, 15.days.ago)
+      
+      # If chaining with other named scope for some reason this has to be specified first
+      #   @post.comments.recent.created_between(x, y)  -- doesn't work
+      #   @post.comments.created_between(x, y).recent -- works
+      #   @post.comments.recent.between(:created_at, x, y) -- works
       
       def method_missing(method, *args, &block)
         case
