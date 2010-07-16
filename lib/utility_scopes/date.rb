@@ -72,7 +72,7 @@ module UtilityScopes
       
       private
       
-      def metaclass; class << self; self end; end
+      def eigenclass; class << self; self end; end
     end
   end
 end

@@ -3,6 +3,7 @@ require File.join(File.dirname(__FILE__), *%w[abstract_spec])
 describe "Date scope" do
   before do
     uses_fixture(:article)
+    Article.stub!(:quoted_table_name).and_return("'articles'")
   end
 
   describe "'after' named_scope" do
@@ -25,7 +26,7 @@ describe "Date scope" do
   
   describe "'between' named_scope" do
     it "should have right proxy options" do
-      Article.between(:created_at, Date.parse("2008-10-10"), Date.parse("2009-10-10")).proxy_options.should == {:conditions=> ["? BETWEEN ? AND ?", 'created_at', Date.parse("2008-10-10"), Date.parse("2009-10-10")] }
+      Article.between(:created_at, Date.parse("2008-10-10"), Date.parse("2009-10-10")).proxy_options.should == {:conditions=> ["created_at BETWEEN ? AND ?", Date.parse("2008-10-10"), Date.parse("2009-10-10")] }
     end
   end
   
@@ -63,7 +64,7 @@ describe "Date scope" do
       el.stub!(:type).and_return(:datetime)
       columns = [el]
       Article.stub!(:columns).and_return(columns)
-      Article.created_between(Date.parse("2008-10-10"), Date.parse("2009-10-10")).proxy_options.should == {:conditions=> ["? BETWEEN ? AND ?", 'created_at', Date.parse("2008-10-10"), Date.parse("2009-10-10")] }
+      Article.created_between(Date.parse("2008-10-10"), Date.parse("2009-10-10")).proxy_options.should == {:conditions=> ["created_at BETWEEN ? AND ?", Date.parse("2008-10-10"), Date.parse("2009-10-10")] }
     end
   end
 end
