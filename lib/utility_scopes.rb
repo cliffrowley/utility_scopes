@@ -3,6 +3,7 @@ require 'utility_scopes/ordered'
 require 'utility_scopes/date'
 require 'utility_scopes/eager'
 require 'utility_scopes/except'
+require 'utility_scopes/pks'
   
 if defined?(ActiveRecord)
 
@@ -12,6 +13,7 @@ if defined?(ActiveRecord)
     include UtilityScopes::Date
     include UtilityScopes::Eager  
     include UtilityScopes::Except  
+    include UtilityScopes::Pks
   end
   
 end

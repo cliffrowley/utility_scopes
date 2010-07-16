@@ -18,7 +18,7 @@ h2. Installation
 
 To install the utility_scopes gem run the following:
 
-  sudo gem install yfactorial-utility_scopes
+  sudo gem install utility_scopes
   
 And to enable the scopes in your project just require @utility_scopes@:
 
@@ -30,8 +30,7 @@ You can also specify the gem dependency if you're running Rails 2.1 in your @con
 
   Rails::Initializer.run do |config|
     # ...
-    config.gem "yfactorial-utility_scopes", :lib => 'utility_scopes', 
-      :source => 'http://gems.github.com/'
+    config.gem "utility_scopes"
   end
 
 You don't need to @require 'utility_scopes'@ in this case as Rails will automatically require it.
@@ -127,14 +126,15 @@ h3. Ordered
 _Note: the @ordered@ scope cannot be chained with any other @order@ clauses_
 
 @ordered@ lets you dynamically specify the ordering of your result set.  If no
-arguments are given it will default to @created_at DESC@:
+arguments are given it will default to @created_at DESC@.  (@ordered@ is also
+available as @order_by@ and @sort_by@)
 
   Article.ordered                 # Get all articles ordered by "created_at DESC"
   Article.ordered(:id)            # Get all articles ordered by "id"
   Article.ordered("rank ASC")     # Get all articles ordered by "rank ASC"
   Article.order_by(:id)           # order_by and sort_by are alias to ordered
-  Article.order_by([:id, :desc], :popularity)           # can take a array as parameter
-  Article.order_by(:id => :desc, :popularity => :asc)   # can take a hash as parameter
+  Article.order_by([:id, :desc], :popularity)           # can take a two-element array as parameter
+  Article.sort_by(:id => :desc, :popularity => :asc)   # can take a hash as parameter
                                                         # only available for jruby/ruby 1.9
   Article.order_by_id             # can be set as a sentence
 
@@ -154,3 +154,10 @@ using @ordered_by@:
 The current default ordering for a class can always be accessed via @default_ordering@:
 
   Article.default_ordering #=> "published_at DESC"
+
+h3. PKs
+
+@only_pks@ selects only the primary key column.  This is useful when combined with the @pks@ class method to get the primary key values as an array:
+
+  Article.published.limited(10).only_pks   # Get the first 10 published articles with only the 'id' value populated [<Article:XX>, <Article:XX>, ...]
+  Article.published.limited(10).pks   # Get the first 10 published article ids: [1, 2, 3 ...]
