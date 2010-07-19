@@ -30,6 +30,13 @@ describe "Date scope" do
     end
   end
   
+  describe "'today' named_scope" do
+    it "should have right proxy options" do
+      Article.today.proxy_options.should == {:conditions=> ["created_at BETWEEN ? AND ?", Time.current.beginning_of_day, Time.current.end_of_day] }
+      Article.today(:updated_at).proxy_options.should == {:conditions=> ["updated_at BETWEEN ? AND ?", Time.current.beginning_of_day, Time.current.end_of_day] }
+    end
+  end
+  
   describe "method_missing" do
     it "should call 'after' named_scope and return the right proxy options" do
       require 'ostruct'

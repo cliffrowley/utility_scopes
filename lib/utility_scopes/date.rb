@@ -21,6 +21,8 @@ module UtilityScopes
               
         named_scope :between, lambda { |*args| { :conditions => ["#{args.flatten[0].to_s} BETWEEN ? AND ?", args.flatten[1], args.flatten[2]] } }
         
+        named_scope :today, lambda { |*args| { :conditions => ["#{args.empty? ? 'created_at' : args.flatten[0].to_s} BETWEEN ? AND ?", Time.current.beginning_of_day, Time.current.end_of_day] } }
+        
         class << self
           # Set alias on
           alias_method :at, :on
@@ -62,6 +64,12 @@ module UtilityScopes
         when col = method.to_s.match(/^(.*)(_between)$/)[1] rescue false
           if col = self.columns.find{|c| c.type == :datetime && c.name.match(/^#{col}(_at|_on)$/) }.name rescue false
             return self.between(col, args.flatten[0], args.flatten[1])
+          else
+            super
+          end
+        when col = method.to_s.match(/^(.*)(_today)$/)[1] rescue false
+          if col = self.columns.find{|c| c.type == :datetime && c.name.match(/^#{col}(_at|_on)$/) }.name rescue false
+            return self.today(col)
           else
             super
           end
