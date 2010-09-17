@@ -7,21 +7,23 @@ module UtilityScopes
       
       base.class_eval do
         # Provide a before date scope
-        named_scope(:before, lambda { |*args|
+        scope(:before, lambda { |*args|
           { :conditions => ["#{args.flatten[0]} < ?", args.flatten[1]] }
         })
         
-        named_scope(:after, lambda { |*args|
+        scope(:after, lambda { |*args|
           { :conditions => ["#{args.flatten[0]} > ?", args.flatten[1]] }
         })
         
-        named_scope(:on, lambda { |*args|
+        scope(:on, lambda { |*args|
           { :conditions => {args.flatten[0] => args.flatten[1]} }
         })
               
-        named_scope :between, lambda { |*args| { :conditions => ["#{args.flatten[0].to_s} BETWEEN ? AND ?", args.flatten[1], args.flatten[2]] } }
+        scope :between, lambda { |*args| { :conditions => ["#{args.flatten[0].to_s} BETWEEN ? AND ?", args.flatten[1], args.flatten[2]] } }
         
-        named_scope :today, lambda { |*args| { :conditions => ["#{args.empty? ? 'created_at' : args.flatten[0].to_s} BETWEEN ? AND ?", Time.current.beginning_of_day, Time.current.end_of_day] } }
+        scope :created_between, lambda { |start_at, end_at| { :conditions => ["created_at BETWEEN ? AND ?", start_at, end_at] } }
+                
+        scope :today, lambda { |*args| { :conditions => ["#{args.empty? ? 'created_at' : args.flatten[0].to_s} BETWEEN ? AND ?", Time.current.beginning_of_day, Time.current.end_of_day] } }
         
         class << self
           # Set alias on

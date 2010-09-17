@@ -10,7 +10,7 @@ module UtilityScopes
     
     module ClassMethods
 
-      # Can't use named_scope b/c don't have access to table_name etc... yet
+      # Can't use scope b/c don't have access to table_name etc... yet
       def only_pks
         scoped(:select => "`#{table_name}`.#{primary_key}")
       end

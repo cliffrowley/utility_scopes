@@ -1,19 +1,26 @@
-require 'utility_scopes/limited'
-require 'utility_scopes/ordered'
 require 'utility_scopes/date'
-require 'utility_scopes/eager'
 require 'utility_scopes/except'
 require 'utility_scopes/pks'
-  
-if defined?(ActiveRecord)
 
-  ActiveRecord::Base.class_eval do
-    include UtilityScopes::Limited
-    include UtilityScopes::Ordered
-    include UtilityScopes::Date
-    include UtilityScopes::Eager  
-    include UtilityScopes::Except  
-    include UtilityScopes::Pks
+module UtilityScopes
+  def self.included(base)
+    base.class_eval do
+      include UtilityScopes::Date
+      include UtilityScopes::Except  
+      include UtilityScopes::Pks
+    end
   end
-  
 end
+  
+# if defined?(ActiveRecord)
+# 
+#   ActiveRecord::Base.class_eval do
+#     include UtilityScopes::Date
+#     include UtilityScopes::Except  
+#     include UtilityScopes::Pks
+#     include UtilityScopes::Deleted
+#   end
+#   
+# end
+
+ActiveRecord::Base.send :include, UtilityScopes

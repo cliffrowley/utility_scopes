@@ -6,31 +6,31 @@ describe "Date scope" do
     Article.stub!(:quoted_table_name).and_return("'articles'")
   end
 
-  describe "'after' named_scope" do
+  describe "'after' scope" do
     it "should have right proxy options" do
       Article.after(:created_at, Date.parse("2008-10-10")).proxy_options.should == {:conditions=>["created_at > ?", Date.parse("2008-10-10")]}
     end
   end
 
-  describe "'before' named_scope" do
+  describe "'before' scope" do
     it "should have right proxy options" do
       Article.before(:created_at, Date.parse("2008-10-10")).proxy_options.should == {:conditions=>["created_at < ?", Date.parse("2008-10-10")]}
     end
   end
   
-  describe "'on' named_scope" do
+  describe "'on' scope" do
     it "should have right proxy options" do
       Article.on(:created_at, Date.parse("2008-10-10")).proxy_options.should == {:conditions=> {:created_at => Date.parse("2008-10-10")}}
     end
   end
   
-  describe "'between' named_scope" do
+  describe "'between' scope" do
     it "should have right proxy options" do
       Article.between(:created_at, Date.parse("2008-10-10"), Date.parse("2009-10-10")).proxy_options.should == {:conditions=> ["created_at BETWEEN ? AND ?", Date.parse("2008-10-10"), Date.parse("2009-10-10")] }
     end
   end
   
-  describe "'today' named_scope" do
+  describe "'today' scope" do
     it "should have right proxy options" do
       Article.today.proxy_options.should == {:conditions=> ["created_at BETWEEN ? AND ?", Time.current.beginning_of_day, Time.current.end_of_day] }
       Article.today(:updated_at).proxy_options.should == {:conditions=> ["updated_at BETWEEN ? AND ?", Time.current.beginning_of_day, Time.current.end_of_day] }
@@ -38,7 +38,7 @@ describe "Date scope" do
   end
   
   describe "method_missing" do
-    it "should call 'after' named_scope and return the right proxy options" do
+    it "should call 'after' scope and return the right proxy options" do
       require 'ostruct'
       el = OpenStruct.new({:name => 'created_at'})
       el.stub!(:type).and_return(:datetime)
@@ -47,7 +47,7 @@ describe "Date scope" do
       Article.created_after(Date.parse("2008-10-10")).proxy_options.should == {:conditions=>["created_at > ?", Date.parse("2008-10-10")]}
     end
     
-    it "should call 'before' named_scope and return the right proxy options" do
+    it "should call 'before' scope and return the right proxy options" do
       require 'ostruct'
       el = OpenStruct.new({:name => 'created_at'})
       el.stub!(:type).and_return(:datetime)
@@ -56,7 +56,7 @@ describe "Date scope" do
       Article.created_before(Date.parse("2008-10-10")).proxy_options.should == {:conditions=>["created_at < ?", Date.parse("2008-10-10")]}
     end
     
-    it "should call 'on' named_scope and return the right proxy options" do
+    it "should call 'on' scope and return the right proxy options" do
       require 'ostruct'
       el = OpenStruct.new({:name => 'created_at'})
       el.stub!(:type).and_return(:datetime)
@@ -65,7 +65,7 @@ describe "Date scope" do
       Article.created_at(Date.parse("2008-10-10")).proxy_options.should == {:conditions=> {"created_at" => Date.parse("2008-10-10")}}
     end
     
-    it "should call 'between' named_scope and return the right proxy options" do
+    it "should call 'between' scope and return the right proxy options" do
       require 'ostruct'
       el = OpenStruct.new({:name => 'created_at'})
       el.stub!(:type).and_return(:datetime)
