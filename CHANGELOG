@@ -1,10 +1,14 @@
+0.3.1
+
+* Except scope renamed to without because of name conflict with last Rails versions
+
 0.3.0
 
 Added only_pks named scope (and pks class method)
 
 0.2.3
 
-Renamed metaclass to eigenclass to avoid conflict w/ Rails' method of the same name 
+Renamed metaclass to eigenclass to avoid conflict w/ Rails' method of the same name
 
 0.2.2
 

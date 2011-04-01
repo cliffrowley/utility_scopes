@@ -7,7 +7,7 @@ ActiveRecord models.
 
 
 Utility scopes was originally announced "here":http://ryandaigle.com/articles/2008/8/20/named-scope-it-s-not-just-for-conditions-ya-know and has expanded in scope and functionality since then thanks to user contributions.  See the
-"CHANGELOG":http://github.com/yfactorial/utility_scopes/tree/master/CHANGELOG for contribution details. 
+"CHANGELOG":http://github.com/yfactorial/utility_scopes/tree/master/CHANGELOG for contribution details.
 
 Utility scopes has the following dependencies:
 
@@ -19,7 +19,7 @@ h2. Installation
 To install the utility_scopes gem run the following:
 
   sudo gem install utility_scopes
-  
+
 And to enable the scopes in your project just require @utility_scopes@:
 
   require 'utility_scopes'
@@ -34,7 +34,7 @@ You can also specify the gem dependency if you're running Rails 2.1 in your @con
   end
 
 You don't need to @require 'utility_scopes'@ in this case as Rails will automatically require it.
-  
+
 h2. Scopes
 
 Most examples assume the following @Article@ class:
@@ -47,10 +47,10 @@ Most examples assume the following @Article@ class:
 
 Named scopes are chainable by nature, meaning that the following is possible:
 
-  Article.with(:comments).except(1, 2, 3).ordered.limited(5)
-  
+  Article.with(:comments).without(1, 2, 3).ordered.limited(5)
+
 Any exceptions to chainable scopes will be specified in their section below.
-  
+
 h3. With (eager-loading)
 
 The @with@ scope let's you eager load your model associations.  So instead of having to invoke @find(:all, :include => [:association1, :association2])@ just pass these association names into
@@ -60,50 +60,50 @@ the @with@ named scope:
   # Get all articles and eager-load their comments, each comments' user, article contributors
   # and the article author.
   Article.with({ :comments => :user }, :contributors, :author)
-  
+
   # Get all articles and eager-load their comments
   Article.with(:comments)
   </code></pre>
 
 Again, just pass in the same arguments into @eager@ that you would pass in as the @:include@ value to "ActiveRecord::Base#find":http://api.rubyonrails.com/classes/ActiveRecord/Base.html#M001298
 
-h3. Except
+h3. Without
 
 _contributed by danielmorrison_
 
-@except@ excludes the given records from the result set:
+@without@ excludes the given records from the result set:
 
-  Article.except(1, 2, 3)           # Get all articles whose id is NOT 1, 2 or 3
-  Article.except(@article)          # Get all articles except the given one
-  Article.except(@new_articles)     # Get all non-new articles
-  
+  Article.without(1, 2, 3)           # Get all articles whose id is NOT 1, 2 or 3
+  Article.without(@article)          # Get all articles without the given one
+  Article.without(@new_articles)     # Get all non-new articles
+
 h3. Limited
 
 @limited@ lets you place a limit on the number of results returned.  By default
 the scope will limit the result set to 10 results if no argument is passed in:
 
   Article.limited                # Get the first 10 articles
-  Article.except(1).limited(5)   # Get the first 5 articles where id != 1
+  Article.without(1).limited(5)   # Get the first 5 articles where id != 1
 
 If you're using "will_paginate":http://github.com/mislav/will_paginate/tree/master and don't
 pass an argument to the scope then the @per_page@ value that is used by will_paginate
 will be used:
 
   Article.per_page   #=> 20
-  Article.limited    # Get the first 20 articles   
+  Article.limited    # Get the first 20 articles
 
 If you would like to specify a different default value you can do so on a per class basis
 using @default_limit@:
 
   <pre><code>
-  # Set the default limit to be 15  
+  # Set the default limit to be 15
   class Article < ActiveRecord::Base
     default_limit 15
   end
-  
+
   Article.limited  # Get the first 15 articles
   </code></pre>
-  
+
 h3. Date
 
 @after@ lets you dynamically select every record for a column after a choosen date.
@@ -146,7 +146,7 @@ using @ordered_by@:
   class Article < ActiveRecord::Base
     ordered_by 'published_at DESC'
   end
- 
+
   Article.ordered              # Get all articles ordered by "published_at DESC"
   Article.ordered("rank ASC")  # Get all articles ordered by "rank ASC"
   </code></pre>
