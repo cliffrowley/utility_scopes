@@ -11,7 +11,7 @@ module UtilityScopes
         # And automatically do so for all its subclasses
         def self.inherited_with_without_scope_hook(child)
           inherited_without_without_scope_hook(child)
-          child.attach_without_utility_scope
+          child.attach_without_utility_scope unless child.respond_to?(:without)
         end
         class << self
           alias_method_chain :inherited, :without_scope_hook
@@ -33,7 +33,7 @@ module UtilityScopes
         #   after    Article.without(@bad_article)
         scope :without, lambda { |item_or_list|
           # nil or empty array causes issues here with mysql
-          item_or_list.blank? ? {} : {:conditions => ["#{quoted_table_name}.#{primary_key} NOT IN (?)", item_or_list]}
+          where("#{quoted_table_name}.#{primary_key} NOT IN (?)", item_or_list) unless item_or_list.blank?
         }
       end
     end
